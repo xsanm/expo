@@ -196,6 +196,7 @@ export function decryptAesGcm(key, data, iv) {
     return ExpoCrypto.decryptAesGcm(key, data, iv);
 }
 export function exportKey(format, key) {
+    console.log("auuu");
     const tmp = new Uint8Array(32);
     ExpoCrypto.exportKey(format, key, tmp);
     return tmp;
