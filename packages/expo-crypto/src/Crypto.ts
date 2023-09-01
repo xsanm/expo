@@ -8,6 +8,8 @@ declare const global: any;
 
 export * from './Crypto.types';
 
+export const { CryptoKey } = ExpoCrypto;
+
 class CryptoError extends TypeError {
   code = 'ERR_CRYPTO';
 
@@ -218,4 +220,12 @@ export function digest(algorithm: CryptoDigestAlgorithm, data: BufferSource): Pr
       reject(error);
     }
   });
+}
+
+export function encryptAesGcm(key: CryptoKey, data: string, iv: Uint8Array): string {
+  return ExpoCrypto.encryptAesGcm(key, data, iv);
+}
+
+export function decryptAesGcm(key: CryptoKey, data: string, iv: Uint8Array): string {
+  return ExpoCrypto.decryptAesGcm(key, data, iv);
 }

@@ -1,18 +1,32 @@
 package expo.modules.crypto
 
 import android.util.Base64
+import expo.modules.kotlin.exception.CodedException
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.typedarray.TypedArray
+import expo.modules.kotlin.typedarray.Uint8Array
+import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.UUID
+import javax.crypto.Cipher
+import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 class CryptoModule : Module() {
   private val secureRandom by lazy { SecureRandom() }
 
   override fun definition() = ModuleDefinition {
     Name("ExpoCrypto")
+
+    Class("AesGcmParams")
+
+    Class(CryptoKey::class) {
+      Constructor { algorithm:AesKeyGenParams, extractable: Boolean, keyUsages: List<KeyUsage> ->
+        return@Constructor CryptoKey(algorithm, extractable, keyUsages)
+      }
+    }
 
     Function("digestString", this@CryptoModule::digestString)
     AsyncFunction("digestStringAsync", this@CryptoModule::digestString)
@@ -23,6 +37,8 @@ class CryptoModule : Module() {
     Function("randomUUID") {
       UUID.randomUUID().toString()
     }
+    Function("encryptAesGcm", this@CryptoModule::encryptAesGcm)
+    Function("decryptAesGcm", this@CryptoModule::decryptAesGcm)
   }
 
   private fun getRandomBase64String(randomByteCount: Int): String {
@@ -61,4 +77,53 @@ class CryptoModule : Module() {
     secureRandom.nextBytes(array)
     typedArray.write(array, typedArray.byteOffset, typedArray.byteLength)
   }
+
+  private fun encryptAesGcm(key: CryptoKey, data: String, iv: Uint8Array): String {
+    if(!key.keyUsages.contains(KeyUsage.ENCRYPT)) {
+      throw WrongKeyUsageException();
+    }
+
+    val dataBytes = data.toByteArray();
+
+    val ivBuffer = iv.toDirectBuffer();
+    val ivBytes = ByteArray(iv.length).also (ivBuffer::get)
+
+    val spec = GCMParameterSpec(128, ivBytes)
+
+    val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+    val keySpec = SecretKeySpec(key.getKey().encoded,"AES")
+    cipher.init(Cipher.ENCRYPT_MODE, keySpec, spec)
+
+    val cipherText = cipher.doFinal(dataBytes)
+
+    return Base64.encodeToString(cipherText, Base64.DEFAULT)
+  }
+
+  private fun decryptAesGcm(key: CryptoKey, data: String, iv: Uint8Array): String {
+    if(!key.keyUsages.contains(KeyUsage.DECRYPT)) {
+      throw WrongKeyUsageException();
+    }
+
+    val ivBuffer = iv.toDirectBuffer();
+    val ivBytes = ByteArray(iv.length).also(ivBuffer::get)
+
+    val spec = GCMParameterSpec(128, ivBytes)
+    val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+    val keySpec = SecretKeySpec(key.getKey().encoded,"AES")
+    cipher.init(Cipher.DECRYPT_MODE, keySpec, spec)
+
+    val decoded = Base64.decode(data, Base64.DEFAULT)
+
+    val plaintext = cipher.doFinal(decoded)
+
+    return String(plaintext, Charset.forName("UTF-8"))
+  }
 }
+
+class WrongKeyUsageException : CodedException(
+  message = "Wrong key usage"
+)
+
+class InvalidKeyAlgorithm : CodedException(
+  message = "Invalid key Algorithm"
+)

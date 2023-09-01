@@ -1,4 +1,5 @@
 import * as Crypto from 'expo-crypto';
+import { CryptoKeyUsage } from 'expo-crypto';
 import { Platform } from 'react-native';
 
 function areArrayBuffersEqual(a, b) {
@@ -105,6 +106,59 @@ export async function test({ describe, it, expect }) {
           }
         });
       }
+    });
+
+    describe('AES GCM', async () => {
+      const iv1 = new Uint8Array(12).fill(1);
+      const iv2 = new Uint8Array(12).fill(2);
+
+      const key = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
+        CryptoKeyUsage.ENCRYPT,
+        CryptoKeyUsage.DECRYPT,
+      ]);
+
+      const wrongKey = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
+        CryptoKeyUsage.ENCRYPT,
+        CryptoKeyUsage.DECRYPT,
+      ]);
+
+      const plaintext = 'plain text';
+
+      const encrypted = Crypto.encryptAesGcm(key, plaintext, iv1);
+      const decrypted = Crypto.decryptAesGcm(key, encrypted, iv1);
+
+      it('should decrypt', async () => {
+        expect(plaintext).toBe(decrypted);
+      });
+      it('should fail with data', async () => {
+        expect(() => Crypto.decryptAesGcm(key, plaintext, iv1)).toThrow();
+      });
+      it('should fail with wrong key', async () => {
+        expect(() => Crypto.decryptAesGcm(wrongKey, encrypted, iv1)).toThrow();
+      });
+      it('should fail with wrong IV', async () => {
+        expect(() => Crypto.decryptAesGcm(key, encrypted, iv2)).toThrow();
+      });
+    });
+    describe('CryptoKey', async () => {
+      const iv = new Uint8Array(12).fill(1);
+
+      const keyForEncryption = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
+        CryptoKeyUsage.ENCRYPT,
+      ]);
+
+      const keyForDecryption = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
+        CryptoKeyUsage.DECRYPT,
+      ]);
+
+      const plaintext = 'plain text';
+
+      it('should fail while encrypting with key only for decryption', async () => {
+        expect(() => Crypto.decryptAesGcm(keyForDecryption, plaintext, iv)).toThrow();
+      });
+      it('should fail while decrypting with key only for encryption', async () => {
+        expect(() => Crypto.decryptAesGcm(keyForEncryption, plaintext, iv)).toThrow();
+      });
     });
   });
 }

@@ -1,5 +1,5 @@
 import * as Crypto from 'expo-crypto';
-import { CryptoDigestAlgorithm, CryptoEncoding } from 'expo-crypto';
+import { CryptoDigestAlgorithm, CryptoEncoding, CryptoKeyUsage } from 'expo-crypto';
 import React from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 
@@ -125,6 +125,63 @@ const DIGEST: FunctionDescription = {
   },
 };
 
+//TODO fix global variable
+const key = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
+  CryptoKeyUsage.ENCRYPT,
+  CryptoKeyUsage.DECRYPT,
+]);
+
+const ENCRYPT_AES_GCM: FunctionDescription = {
+  name: 'encryptAes',
+  parameters: [
+    {
+      name: 'CryptoKey',
+      type: 'constant',
+      value: key,
+    },
+    {
+      name: 'data',
+      type: 'string',
+      values: ['some random string to encrypt', 'more complicated string !ABC+** /==🤬'],
+    },
+    {
+      name: 'iv',
+      type: 'enum',
+      values: [{ name: 'new Uint8Array(12).fill(1)', value: new Uint8Array(10).fill(1) }],
+    },
+  ],
+  actions: (key: CryptoKey, data: string, iv: Uint8Array) => {
+    return Crypto.encryptAesGcm(key, data, iv);
+  },
+};
+
+const DECRYPT_AES_GCM: FunctionDescription = {
+  name: 'decryptAes',
+  parameters: [
+    {
+      name: 'CryptoKeyTO',
+      type: 'constant',
+      value: key,
+    },
+    {
+      name: 'data',
+      type: 'string',
+      values: [
+        'wsVBHh/1KYWjoOsDVigN2jSbleHldpTz9LGQzYA8PZVkQRIdHnua9oabKgaY',
+        '3MVeHh/kJ4a3o+9ARCga13qPwefjOJa9toKr/t/k5mQbDK+q4AoKgNFrg32BxdXBRaVtisoQ3A==',
+      ],
+    },
+    {
+      name: 'iv',
+      type: 'enum',
+      values: [{ name: 'new Uint8Array(12).fill(1)', value: new Uint8Array(10).fill(1) }],
+    },
+  ],
+  actions: (key: CryptoKey, data: string, iv: Uint8Array) => {
+    return Crypto.decryptAesGcm(key, data, iv);
+  },
+};
+
 const FUNCTIONS_DESCRIPTIONS = [
   GET_RANDOM_BYTES,
   GET_RANDOM_BYTES_ASYNC,
@@ -132,6 +189,8 @@ const FUNCTIONS_DESCRIPTIONS = [
   GET_RANDOM_VALUES,
   RANDOM_UUID,
   DIGEST,
+  ENCRYPT_AES_GCM,
+  DECRYPT_AES_GCM,
 ];
 
 function CryptoScreen() {

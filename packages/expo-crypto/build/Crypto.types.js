@@ -46,4 +46,15 @@ export var CryptoEncoding;
      */
     CryptoEncoding["BASE64"] = "base64";
 })(CryptoEncoding || (CryptoEncoding = {}));
+export var CryptoKeyUsage;
+(function (CryptoKeyUsage) {
+    CryptoKeyUsage["ENCRYPT"] = "encrypt";
+    CryptoKeyUsage["DECRYPT"] = "decrypt";
+    CryptoKeyUsage["SIGN"] = "sign";
+    CryptoKeyUsage["VERIFY"] = "verify";
+    CryptoKeyUsage["DERIVEKEY"] = "deriveKey";
+    CryptoKeyUsage["DERIVEBITS"] = "deriveBits";
+    CryptoKeyUsage["WRAPKEY"] = "wrapKey";
+    CryptoKeyUsage["UNWRAPKEY"] = "unwrapKey";
+})(CryptoKeyUsage || (CryptoKeyUsage = {}));
 //# sourceMappingURL=Crypto.types.js.map
