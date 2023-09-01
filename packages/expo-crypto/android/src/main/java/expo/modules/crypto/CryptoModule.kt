@@ -11,6 +11,7 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.UUID
 import javax.crypto.Cipher
+import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
@@ -39,6 +40,8 @@ class CryptoModule : Module() {
     }
     Function("encryptAesGcm", this@CryptoModule::encryptAesGcm)
     Function("decryptAesGcm", this@CryptoModule::decryptAesGcm)
+    Function("exportKey", this@CryptoModule::exportKey)
+    Function("importKey", this@CryptoModule::importKey)
   }
 
   private fun getRandomBase64String(randomByteCount: Int): String {
@@ -118,6 +121,35 @@ class CryptoModule : Module() {
 
     return String(plaintext, Charset.forName("UTF-8"))
   }
+
+  private fun exportKey(format: KeyFormat, key: CryptoKey, dest: Uint8Array) {
+    if(format != KeyFormat.RAW) {
+      throw WrongKeyUsageException();
+    }
+
+    //  TODO check for size
+    val keyBytes = key.getKey().encoded
+    dest.write(keyBytes, position = 0, size = keyBytes.size)
+  }
+
+  private fun importKey(format: KeyFormat, key: Uint8Array, cryptoKey: CryptoKey) {
+    if(format != KeyFormat.RAW) {
+      throw WrongKeyUsageException();
+    }
+
+    //  TODO check for size
+    val secKey = key.toSecretKey()
+    cryptoKey.setKey(secKey)
+  }
+}
+
+fun ByteArray.toSecretKey(algorithm: String = "AES") =
+  SecretKeySpec(this, 0, this.size, algorithm)
+
+fun Uint8Array.toSecretKey(): SecretKey {
+  return ByteArray(32)
+    .also { bytes -> this.read(bytes, 0, 32) }
+    .toSecretKey()
 }
 
 class WrongKeyUsageException : CodedException(

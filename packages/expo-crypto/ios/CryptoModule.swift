@@ -36,7 +36,7 @@ public class CryptoModule: Module {
 
     Function("exportKey", exportKey)
 
-   Function("importKey", importKey)
+    Function("importKey", importKey)
 
   }
 }

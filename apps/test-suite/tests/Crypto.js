@@ -167,10 +167,13 @@ export async function test({ describe, it, expect }) {
       const key = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
         CryptoKeyUsage.ENCRYPT, CryptoKeyUsage.DECRYPT,
       ]);
+      const keyForDecryption = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
+        CryptoKeyUsage.ENCRYPT, CryptoKeyUsage.DECRYPT,
+      ]);
 
       const rawKey = Crypto.exportKey(CryptoKeyFormat.RAW, key);
-      console.log(rawKey)
-      const keyForDecryption = Crypto.importKey(CryptoKeyFormat.RAW, rawKey);
+
+      Crypto.importKey(CryptoKeyFormat.RAW, rawKey, keyForDecryption);
 
       const plaintext = 'plain text';
       const encrypted = Crypto.encryptAesGcm(key, plaintext, iv);

@@ -237,6 +237,6 @@ export function exportKey(format: CryptoKeyFormat, key: CryptoKey): Uint8Array {
   return tmp;
 }
 
-export function importKey(format: CryptoKeyFormat, key:  Uint8Array): CryptoKey {
-  return ExpoCrypto.importKey(format, key);
+export function importKey(format: CryptoKeyFormat, key: Uint8Array, destKey: CryptoKey) {
+  ExpoCrypto.importKey(format, key, destKey);
 }

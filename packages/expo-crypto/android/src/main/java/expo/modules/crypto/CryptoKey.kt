@@ -22,6 +22,13 @@ enum class KeyUsage(val value: String) : Enumerable {
   UNWRAPKEY("unwrapKey")
 }
 
+enum class KeyFormat(val value: String) : Enumerable {
+  RAW("raw"),
+  PCKS8("pkcs8"),
+  SPKI("spki"),
+  JWK("jwk"),
+}
+
 class AesKeyGenParams : Record {
   @Field
   @Required
@@ -74,5 +81,9 @@ class CryptoKey(
 
   fun getKey(): SecretKey {
     return secretKey
+  }
+
+  fun setKey(key: SecretKey) {
+    this.secretKey = key
   }
 }

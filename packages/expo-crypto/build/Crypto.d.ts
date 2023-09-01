@@ -84,5 +84,5 @@ export declare function digest(algorithm: CryptoDigestAlgorithm, data: BufferSou
 export declare function encryptAesGcm(key: CryptoKey, data: string, iv: Uint8Array): string;
 export declare function decryptAesGcm(key: CryptoKey, data: string, iv: Uint8Array): string;
 export declare function exportKey(format: CryptoKeyFormat, key: CryptoKey): Uint8Array;
-export declare function importKey(format: CryptoKeyFormat, key: Uint8Array): CryptoKey;
+export declare function importKey(format: CryptoKeyFormat, key: Uint8Array, destKey: CryptoKey): void;
 //# sourceMappingURL=Crypto.d.ts.map

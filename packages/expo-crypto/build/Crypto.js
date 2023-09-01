@@ -201,7 +201,7 @@ export function exportKey(format, key) {
     ExpoCrypto.exportKey(format, key, tmp);
     return tmp;
 }
-export function importKey(format, key) {
-    return ExpoCrypto.importKey(format, key);
+export function importKey(format, key, destKey) {
+    ExpoCrypto.importKey(format, key, destKey);
 }
 //# sourceMappingURL=Crypto.js.map
