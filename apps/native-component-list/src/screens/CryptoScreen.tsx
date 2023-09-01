@@ -1,9 +1,9 @@
 import * as Crypto from 'expo-crypto';
-import { CryptoDigestAlgorithm, CryptoEncoding, CryptoKeyUsage } from 'expo-crypto';
+import {CryptoDigestAlgorithm, CryptoEncoding, CryptoKeyFormat, CryptoKeyUsage} from 'expo-crypto';
 import React from 'react';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import {ScrollView, StyleSheet, Text} from 'react-native';
 
-import FunctionDemo, { FunctionDescription } from '../components/FunctionDemo';
+import FunctionDemo, {FunctionDescription} from '../components/FunctionDemo';
 
 const GET_RANDOM_BYTES: FunctionDescription = {
   name: 'getRandomBytes',
@@ -126,10 +126,16 @@ const DIGEST: FunctionDescription = {
 };
 
 //TODO fix global variable
-const key = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
+const encryptKey = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
   CryptoKeyUsage.ENCRYPT,
+]);
+const decryptKey = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
   CryptoKeyUsage.DECRYPT,
 ]);
+
+const rawKey = new Uint8Array( [205, 29, 179, 40, 131, 245, 0, 13, 86, 6, 218, 110, 131, 23, 54, 64, 7, 90, 54, 43, 234, 189, 72, 102, 23, 226, 115, 102, 77, 32, 225, 151]);
+Crypto.importKey(CryptoKeyFormat.RAW, rawKey, encryptKey)
+Crypto.importKey(CryptoKeyFormat.RAW, rawKey, decryptKey)
 
 const ENCRYPT_AES_GCM: FunctionDescription = {
   name: 'encryptAes',
@@ -137,7 +143,7 @@ const ENCRYPT_AES_GCM: FunctionDescription = {
     {
       name: 'CryptoKey',
       type: 'constant',
-      value: key,
+      value: encryptKey,
     },
     {
       name: 'data',
@@ -161,14 +167,14 @@ const DECRYPT_AES_GCM: FunctionDescription = {
     {
       name: 'CryptoKeyTO',
       type: 'constant',
-      value: key,
+      value: decryptKey,
     },
     {
       name: 'data',
       type: 'string',
       values: [
-        'wsVBHh/1KYWjoOsDVigN2jSbleHldpTz9LGQzYA8PZVkQRIdHnua9oabKgaY',
-        '3MVeHh/kJ4a3o+9ARCga13qPwefjOJa9toKr/t/k5mQbDK+q4AoKgNFrg32BxdXBRaVtisoQ3A==',
+        'geK5yh7xdiE8t+6KrCSjeRSkdjknMwVF0mNPyvCL/mrDHPmvN1xmcuBbMwRv',
+        'n+Kmyh7geCIotOrJviS0dFqwIj8hfQcLkFB0+a8NMF9Rlx0V0t1LVg1l7jKItFlVLE/AyLuz9A==',
       ],
     },
     {
