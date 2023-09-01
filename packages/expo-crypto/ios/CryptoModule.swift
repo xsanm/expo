@@ -34,7 +34,18 @@ public class CryptoModule: Module {
 
     Function("decryptAesGcm", decryptAesGcm)
 
+    Function("exportKey", exportKey)
+
+   Function("importKey", importKey)
+
   }
+}
+
+internal enum KeyFormat: String, EnumArgument {
+  case raw = "raw"
+  case pkcs8 = "pkcs8"
+  case spki = "spki"
+  case jwk = "jwk"
 }
 
 internal enum KeyUsage: String, EnumArgument {
@@ -99,6 +110,11 @@ class CryptoKey: SharedObject {
   func getKey() -> SymmetricKey {
     return secretKey
   }
+
+  func setKey(newKey: SymmetricKey) {
+    self.secretKey = newKey
+  }
+
 }
 
 
@@ -202,6 +218,32 @@ private func decryptAesGcm(key: CryptoKey, data: String, iv: Uint8Array) throws 
 
   return plaintext
 }
+
+private func exportKey(format: KeyFormat, key: CryptoKey, dest: Uint8Array) throws {
+  guard format == .raw else {
+    throw WrongKeyUsageException()
+  }
+
+  //  TODO check for size
+  key.getKey().withUnsafeBytes { bytes in
+    let _ = bytes.copyBytes(to: dest.rawBufferPtr())
+  }
+}
+
+private func importKey(format: KeyFormat, key: Uint8Array) throws -> CryptoKey {
+  guard format == .raw else {
+    throw WrongKeyUsageException()
+  }
+
+  let key = SymmetricKey(data: key.data())
+  let cryptoKey = CryptoKey(
+    algorithm: AesKeyGenParams(name: .gcm, length: 32), extractable: true,
+    keyUsages: [.encrypt, .decrypt])
+  cryptoKey.setKey(newKey: key)
+  return cryptoKey
+}
+
+
 
 extension TypedArray {
   func data() -> Data {

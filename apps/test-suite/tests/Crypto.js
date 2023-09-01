@@ -1,5 +1,5 @@
 import * as Crypto from 'expo-crypto';
-import { CryptoKeyUsage } from 'expo-crypto';
+import { CryptoKeyFormat, CryptoKeyUsage } from 'expo-crypto';
 import { Platform } from 'react-native';
 
 function areArrayBuffersEqual(a, b) {
@@ -140,6 +140,7 @@ export async function test({ describe, it, expect }) {
         expect(() => Crypto.decryptAesGcm(key, encrypted, iv2)).toThrow();
       });
     });
+
     describe('CryptoKey', async () => {
       const iv = new Uint8Array(12).fill(1);
 
@@ -158,6 +159,25 @@ export async function test({ describe, it, expect }) {
       });
       it('should fail while decrypting with key only for encryption', async () => {
         expect(() => Crypto.decryptAesGcm(keyForEncryption, plaintext, iv)).toThrow();
+      });
+    });
+
+    describe('import/export', async () => {
+      const iv = new Uint8Array(12).fill(1);
+      const key = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
+        CryptoKeyUsage.ENCRYPT, CryptoKeyUsage.DECRYPT,
+      ]);
+
+      const rawKey = Crypto.exportKey(CryptoKeyFormat.RAW, key);
+      console.log(rawKey)
+      const keyForDecryption = Crypto.importKey(CryptoKeyFormat.RAW, rawKey);
+
+      const plaintext = 'plain text';
+      const encrypted = Crypto.encryptAesGcm(key, plaintext, iv);
+      const decrypted = Crypto.decryptAesGcm(keyForDecryption, encrypted, iv);
+
+      it('should be able to import/export key', async () => {
+        expect(plaintext).toBe(decrypted);
       });
     });
   });

@@ -58,5 +58,11 @@ export declare enum CryptoKeyUsage {
     WRAPKEY = "wrapKey",
     UNWRAPKEY = "unwrapKey"
 }
+export declare enum CryptoKeyFormat {
+    RAW = "raw",
+    PKCS8 = "pkcs8",
+    SPKI = "spki",
+    JWK = "jwk"
+}
 export type Digest = string;
 //# sourceMappingURL=Crypto.types.d.ts.map

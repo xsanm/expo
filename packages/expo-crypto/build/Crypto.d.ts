@@ -1,5 +1,5 @@
 import { UintBasedTypedArray, IntBasedTypedArray } from 'expo-modules-core';
-import { CryptoDigestAlgorithm, CryptoDigestOptions, Digest } from './Crypto.types';
+import { CryptoDigestAlgorithm, CryptoDigestOptions, Digest, CryptoKeyFormat } from './Crypto.types';
 export * from './Crypto.types';
 export declare const CryptoKey: any;
 /**
@@ -83,4 +83,6 @@ export declare function randomUUID(): string;
 export declare function digest(algorithm: CryptoDigestAlgorithm, data: BufferSource): Promise<ArrayBuffer>;
 export declare function encryptAesGcm(key: CryptoKey, data: string, iv: Uint8Array): string;
 export declare function decryptAesGcm(key: CryptoKey, data: string, iv: Uint8Array): string;
+export declare function exportKey(format: CryptoKeyFormat, key: CryptoKey): Uint8Array;
+export declare function importKey(format: CryptoKeyFormat, key: Uint8Array): CryptoKey;
 //# sourceMappingURL=Crypto.d.ts.map

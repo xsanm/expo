@@ -66,5 +66,12 @@ export enum CryptoKeyUsage {
   UNWRAPKEY = 'unwrapKey',
 }
 
+export enum CryptoKeyFormat {
+  RAW = 'raw',
+  PKCS8 = 'pkcs8',
+  SPKI = 'spki',
+  JWK = 'jwk',
+}
+
 // @docsMissing
 export type Digest = string;

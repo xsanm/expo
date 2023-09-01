@@ -57,4 +57,11 @@ export var CryptoKeyUsage;
     CryptoKeyUsage["WRAPKEY"] = "wrapKey";
     CryptoKeyUsage["UNWRAPKEY"] = "unwrapKey";
 })(CryptoKeyUsage || (CryptoKeyUsage = {}));
+export var CryptoKeyFormat;
+(function (CryptoKeyFormat) {
+    CryptoKeyFormat["RAW"] = "raw";
+    CryptoKeyFormat["PKCS8"] = "pkcs8";
+    CryptoKeyFormat["SPKI"] = "spki";
+    CryptoKeyFormat["JWK"] = "jwk";
+})(CryptoKeyFormat || (CryptoKeyFormat = {}));
 //# sourceMappingURL=Crypto.types.js.map
