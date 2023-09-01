@@ -3,6 +3,7 @@ import { UnavailabilityError } from 'expo-modules-core';
 import { CryptoDigestAlgorithm, CryptoEncoding } from './Crypto.types';
 import ExpoCrypto from './ExpoCrypto';
 export * from './Crypto.types';
+export const { CryptoKey } = ExpoCrypto;
 class CryptoError extends TypeError {
     code = 'ERR_CRYPTO';
     constructor(message) {
@@ -187,5 +188,20 @@ export function digest(algorithm, data) {
             reject(error);
         }
     });
+}
+export function encryptAesGcm(key, data, iv) {
+    return ExpoCrypto.encryptAesGcm(key, data, iv);
+}
+export function decryptAesGcm(key, data, iv) {
+    return ExpoCrypto.decryptAesGcm(key, data, iv);
+}
+export function exportKey(format, key) {
+    console.log("auuu");
+    const tmp = new Uint8Array(32);
+    ExpoCrypto.exportKey(format, key, tmp);
+    return tmp;
+}
+export function importKey(format, key, destKey) {
+    ExpoCrypto.importKey(format, key, destKey);
 }
 //# sourceMappingURL=Crypto.js.map

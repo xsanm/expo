@@ -1,9 +1,9 @@
 import * as Crypto from 'expo-crypto';
-import { CryptoDigestAlgorithm, CryptoEncoding } from 'expo-crypto';
+import {CryptoDigestAlgorithm, CryptoEncoding, CryptoKeyFormat, CryptoKeyUsage} from 'expo-crypto';
 import React from 'react';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import {ScrollView, StyleSheet, Text} from 'react-native';
 
-import FunctionDemo, { FunctionDescription } from '../components/FunctionDemo';
+import FunctionDemo, {FunctionDescription} from '../components/FunctionDemo';
 
 const GET_RANDOM_BYTES: FunctionDescription = {
   name: 'getRandomBytes',
@@ -125,6 +125,69 @@ const DIGEST: FunctionDescription = {
   },
 };
 
+//TODO fix global variable
+const encryptKey = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
+  CryptoKeyUsage.ENCRYPT,
+]);
+const decryptKey = new Crypto.CryptoKey({ name: 'AES-GCM', length: 32 }, false, [
+  CryptoKeyUsage.DECRYPT,
+]);
+
+const rawKey = new Uint8Array( [205, 29, 179, 40, 131, 245, 0, 13, 86, 6, 218, 110, 131, 23, 54, 64, 7, 90, 54, 43, 234, 189, 72, 102, 23, 226, 115, 102, 77, 32, 225, 151]);
+Crypto.importKey(CryptoKeyFormat.RAW, rawKey, encryptKey)
+Crypto.importKey(CryptoKeyFormat.RAW, rawKey, decryptKey)
+
+const ENCRYPT_AES_GCM: FunctionDescription = {
+  name: 'encryptAes',
+  parameters: [
+    {
+      name: 'CryptoKey',
+      type: 'constant',
+      value: encryptKey,
+    },
+    {
+      name: 'data',
+      type: 'string',
+      values: ['some random string to encrypt', 'more complicated string !ABC+** /==🤬'],
+    },
+    {
+      name: 'iv',
+      type: 'enum',
+      values: [{ name: 'new Uint8Array(12).fill(1)', value: new Uint8Array(12).fill(1) }],
+    },
+  ],
+  actions: (key: CryptoKey, data: string, iv: Uint8Array) => {
+    return Crypto.encryptAesGcm(key, data, iv);
+  },
+};
+
+const DECRYPT_AES_GCM: FunctionDescription = {
+  name: 'decryptAes',
+  parameters: [
+    {
+      name: 'CryptoKeyTO',
+      type: 'constant',
+      value: decryptKey,
+    },
+    {
+      name: 'data',
+      type: 'string',
+      values: [
+        'geK5yh7xdiE8t+6KrCSjeRSkdjknMwVF0mNPyvCL/mrDHPmvN1xmcuBbMwRv',
+        'n+Kmyh7geCIotOrJviS0dFqwIj8hfQcLkFB0+a8NMF9Rlx0V0t1LVg1l7jKItFlVLE/AyLuz9A==',
+      ],
+    },
+    {
+      name: 'iv',
+      type: 'enum',
+      values: [{ name: 'new Uint8Array(12).fill(1)', value: new Uint8Array(12).fill(1) }],
+    },
+  ],
+  actions: (key: CryptoKey, data: string, iv: Uint8Array) => {
+    return Crypto.decryptAesGcm(key, data, iv);
+  },
+};
+
 const FUNCTIONS_DESCRIPTIONS = [
   GET_RANDOM_BYTES,
   GET_RANDOM_BYTES_ASYNC,
@@ -132,6 +195,8 @@ const FUNCTIONS_DESCRIPTIONS = [
   GET_RANDOM_VALUES,
   RANDOM_UUID,
   DIGEST,
+  ENCRYPT_AES_GCM,
+  DECRYPT_AES_GCM,
 ];
 
 function CryptoScreen() {

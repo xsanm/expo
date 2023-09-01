@@ -46,4 +46,22 @@ export var CryptoEncoding;
      */
     CryptoEncoding["BASE64"] = "base64";
 })(CryptoEncoding || (CryptoEncoding = {}));
+export var CryptoKeyUsage;
+(function (CryptoKeyUsage) {
+    CryptoKeyUsage["ENCRYPT"] = "encrypt";
+    CryptoKeyUsage["DECRYPT"] = "decrypt";
+    CryptoKeyUsage["SIGN"] = "sign";
+    CryptoKeyUsage["VERIFY"] = "verify";
+    CryptoKeyUsage["DERIVEKEY"] = "deriveKey";
+    CryptoKeyUsage["DERIVEBITS"] = "deriveBits";
+    CryptoKeyUsage["WRAPKEY"] = "wrapKey";
+    CryptoKeyUsage["UNWRAPKEY"] = "unwrapKey";
+})(CryptoKeyUsage || (CryptoKeyUsage = {}));
+export var CryptoKeyFormat;
+(function (CryptoKeyFormat) {
+    CryptoKeyFormat["RAW"] = "raw";
+    CryptoKeyFormat["PKCS8"] = "pkcs8";
+    CryptoKeyFormat["SPKI"] = "spki";
+    CryptoKeyFormat["JWK"] = "jwk";
+})(CryptoKeyFormat || (CryptoKeyFormat = {}));
 //# sourceMappingURL=Crypto.types.js.map

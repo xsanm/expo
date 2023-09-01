@@ -1,12 +1,14 @@
 import { toByteArray } from 'base64-js';
 import { UnavailabilityError, UintBasedTypedArray, IntBasedTypedArray } from 'expo-modules-core';
 
-import { CryptoDigestAlgorithm, CryptoEncoding, CryptoDigestOptions, Digest } from './Crypto.types';
+import {CryptoDigestAlgorithm, CryptoEncoding, CryptoDigestOptions, Digest, CryptoKeyFormat} from './Crypto.types';
 import ExpoCrypto from './ExpoCrypto';
 
 declare const global: any;
 
 export * from './Crypto.types';
+
+export const { CryptoKey } = ExpoCrypto;
 
 class CryptoError extends TypeError {
   code = 'ERR_CRYPTO';
@@ -218,4 +220,23 @@ export function digest(algorithm: CryptoDigestAlgorithm, data: BufferSource): Pr
       reject(error);
     }
   });
+}
+
+export function encryptAesGcm(key: CryptoKey, data: string, iv: Uint8Array): string {
+  return ExpoCrypto.encryptAesGcm(key, data, iv);
+}
+
+export function decryptAesGcm(key: CryptoKey, data: string, iv: Uint8Array): string {
+  return ExpoCrypto.decryptAesGcm(key, data, iv);
+}
+
+export function exportKey(format: CryptoKeyFormat, key: CryptoKey): Uint8Array {
+  console.log("auuu")
+  const tmp = new Uint8Array(32);
+  ExpoCrypto.exportKey(format, key, tmp);
+  return tmp;
+}
+
+export function importKey(format: CryptoKeyFormat, key: Uint8Array, destKey: CryptoKey) {
+  ExpoCrypto.importKey(format, key, destKey);
 }

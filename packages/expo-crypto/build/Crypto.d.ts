@@ -1,6 +1,7 @@
 import { UintBasedTypedArray, IntBasedTypedArray } from 'expo-modules-core';
-import { CryptoDigestAlgorithm, CryptoDigestOptions, Digest } from './Crypto.types';
+import { CryptoDigestAlgorithm, CryptoDigestOptions, Digest, CryptoKeyFormat } from './Crypto.types';
 export * from './Crypto.types';
+export declare const CryptoKey: any;
 /**
  * Generates completely random bytes using native implementations. The `byteCount` property
  * is a `number` indicating the number of bytes to generate in the form of a `Uint8Array`.
@@ -80,4 +81,8 @@ export declare function randomUUID(): string;
  * ```
  */
 export declare function digest(algorithm: CryptoDigestAlgorithm, data: BufferSource): Promise<ArrayBuffer>;
+export declare function encryptAesGcm(key: CryptoKey, data: string, iv: Uint8Array): string;
+export declare function decryptAesGcm(key: CryptoKey, data: string, iv: Uint8Array): string;
+export declare function exportKey(format: CryptoKeyFormat, key: CryptoKey): Uint8Array;
+export declare function importKey(format: CryptoKeyFormat, key: Uint8Array, destKey: CryptoKey): void;
 //# sourceMappingURL=Crypto.d.ts.map

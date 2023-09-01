@@ -54,5 +54,24 @@ export type CryptoDigestOptions = {
   encoding: CryptoEncoding;
 };
 
+
+export enum CryptoKeyUsage {
+  ENCRYPT = 'encrypt',
+  DECRYPT = 'decrypt',
+  SIGN = 'sign',
+  VERIFY = 'verify',
+  DERIVEKEY = 'deriveKey',
+  DERIVEBITS = 'deriveBits',
+  WRAPKEY = 'wrapKey',
+  UNWRAPKEY = 'unwrapKey',
+}
+
+export enum CryptoKeyFormat {
+  RAW = 'raw',
+  PKCS8 = 'pkcs8',
+  SPKI = 'spki',
+  JWK = 'jwk',
+}
+
 // @docsMissing
 export type Digest = string;
