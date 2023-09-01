@@ -147,7 +147,7 @@ const ENCRYPT_AES_GCM: FunctionDescription = {
     {
       name: 'iv',
       type: 'enum',
-      values: [{ name: 'new Uint8Array(12).fill(1)', value: new Uint8Array(10).fill(1) }],
+      values: [{ name: 'new Uint8Array(12).fill(1)', value: new Uint8Array(12).fill(1) }],
     },
   ],
   actions: (key: CryptoKey, data: string, iv: Uint8Array) => {
@@ -174,7 +174,7 @@ const DECRYPT_AES_GCM: FunctionDescription = {
     {
       name: 'iv',
       type: 'enum',
-      values: [{ name: 'new Uint8Array(12).fill(1)', value: new Uint8Array(10).fill(1) }],
+      values: [{ name: 'new Uint8Array(12).fill(1)', value: new Uint8Array(12).fill(1) }],
     },
   ],
   actions: (key: CryptoKey, data: string, iv: Uint8Array) => {
